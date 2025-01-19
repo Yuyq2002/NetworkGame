@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -6,10 +7,13 @@ using UnityEngine.Events;
 
 public class GameManager : NetworkBehaviour
 {
-    public static GameManager Instance;
+    [SerializeField] private float m_intermission_time;
+
     private Dictionary<ulong, int> m_scoreboard = new();
     private List<ulong> m_survivor = new();
+    private List<ServerSidePlayerCollision> m_player_ref = new();
 
+    public static GameManager Instance;
     public UnityAction<int[]> OnScoreChanged;
 
     private void Awake()
@@ -43,6 +47,7 @@ public class GameManager : NetworkBehaviour
     {
         m_scoreboard.Add(p_client_id, 0);
         m_survivor.Add(p_client_id);
+        m_player_ref.Add(NetworkManager.Singleton.ConnectedClients[p_client_id].PlayerObject.gameObject.GetComponent<ServerSidePlayerCollision>());
         Debug.Log("New client");
     }
 
@@ -63,6 +68,7 @@ public class GameManager : NetworkBehaviour
         {
             m_scoreboard[m_survivor[0]]++;
             OnScoreChangeRpc(m_scoreboard.Values.ToArray());
+            StartCoroutine(Intermission());
         }
     }
 
@@ -70,5 +76,19 @@ public class GameManager : NetworkBehaviour
     void OnScoreChangeRpc(int[] p_score)
     {
         OnScoreChanged.Invoke(p_score);
+    }
+
+    private IEnumerator Intermission()
+    {
+        yield return new WaitForSeconds(m_intermission_time);
+
+        Debug.Log("Restart");
+
+        foreach (ServerSidePlayerCollision player in m_player_ref) player.EnablePlayerRpc();
+        m_survivor.Clear();
+        foreach(var client_id in m_scoreboard.Keys)
+        {
+            m_survivor.Add(client_id);
+        }
     }
 }

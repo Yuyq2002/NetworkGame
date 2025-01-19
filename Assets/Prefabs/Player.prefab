@@ -246,9 +246,9 @@ MonoBehaviour:
   UseUnreliableDeltas: 0
   SyncPositionX: 1
   SyncPositionY: 1
-  SyncPositionZ: 1
-  SyncRotAngleX: 1
-  SyncRotAngleY: 1
+  SyncPositionZ: 0
+  SyncRotAngleX: 0
+  SyncRotAngleY: 0
   SyncRotAngleZ: 1
   SyncScaleX: 0
   SyncScaleY: 0
@@ -293,6 +293,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   m_bullet_pref: {fileID: 8176332284432350955, guid: 55d67683722c1df46af7ed1a220a21cc, type: 3}
   m_spawn_distance: 0.8
+  m_emote_pref: {fileID: 1504563593161363330, guid: dabe790703207f8408aa4016fdc0f3e9, type: 3}
+  m_emote_cooldown: 3
 --- !u!114 &7759379791096957924
 MonoBehaviour:
   m_ObjectHideFlags: 0

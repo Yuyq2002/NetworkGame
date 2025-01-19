@@ -11,8 +11,20 @@ public class ServerSidePlayerCollision : NetworkBehaviour
         if(collision.gameObject.tag == "Bullet")
         {
             collision.gameObject.GetComponent<NetworkObject>().Despawn();
-            gameObject.GetComponent<NetworkObject>().Despawn();
+            DisablePlayerRpc();
             GameManager.Instance.PlayerDied(OwnerClientId);
         }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    void DisablePlayerRpc()
+    {
+        gameObject.SetActive(false);
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void EnablePlayerRpc()
+    {
+        gameObject.SetActive(true);
     }
 }
