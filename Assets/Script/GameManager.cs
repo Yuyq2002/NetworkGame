@@ -8,6 +8,9 @@ using UnityEngine.Events;
 public class GameManager : NetworkBehaviour
 {
     [SerializeField] private float m_intermission_time;
+    [SerializeField] private List<Transform> m_spawn_points;
+
+    private int m_available_spawn_point = 0;
 
     private Dictionary<ulong, int> m_scoreboard = new();
     private List<ulong> m_survivor = new();
@@ -48,6 +51,8 @@ public class GameManager : NetworkBehaviour
         m_scoreboard.Add(p_client_id, 0);
         m_survivor.Add(p_client_id);
         m_player_ref.Add(NetworkManager.Singleton.ConnectedClients[p_client_id].PlayerObject.gameObject.GetComponent<ServerSidePlayerCollision>());
+        NetworkManager.Singleton.ConnectedClients[p_client_id].PlayerObject.transform.position = m_spawn_points[m_available_spawn_point].position;
+        m_available_spawn_point++;
         Debug.Log("New client");
     }
 
